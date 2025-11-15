@@ -22,20 +22,14 @@
 <div align="center">
 
 ### **Landing Page - Premium Financial Intelligence**
-![LUMEN Landing Page]
-*AI-powered transaction management with real-time fraud detection*
 
 <img src="hero_page.jpg" alt="LUMEN Landing Page" width="100%"/>
 
 ### **Secure Authentication**
-![Login Page]
-*Clean, professional login interface with 99.8% accuracy and 1M+ users*
 
 <img src="login_signup.jpg" alt="Login Page" width="100%"/>
 
 ### **Real-Time Analytics Dashboard**
-![Analytics Dashboard]
-*Interactive spending insights, category breakdowns, and merchant analysis*
 
 <img src="analytics.jpg" alt="Analytics Dashboard" width="100%"/>
 
