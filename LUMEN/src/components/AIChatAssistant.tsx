@@ -70,6 +70,7 @@ export default function AIChatAssistant() {
       const result = await chatService.sendMessage(text, sessionId || undefined);
       
       console.log('RAG API Response:', result); // Debug log
+      console.log('Response data structure:', JSON.stringify(result.data, null, 2)); // Detailed structure
       
       if (result.success && result.data) {
         // Update session ID if returned
@@ -77,11 +78,14 @@ export default function AIChatAssistant() {
           setSessionId(result.data.session_id);
         }
 
-        // Only include transactions if should_show_transactions is true
-        const shouldShowTransactions = result.data.should_show_transactions || false;
-        const transactionsToShow = shouldShowTransactions && result.data.retrieved_docs 
+        // Backend returns retrieved_docs array with transaction data
+        // Show transactions if retrieved_docs exists and has data
+        const transactionsToShow = result.data.retrieved_docs && result.data.retrieved_docs.length > 0
           ? result.data.retrieved_docs 
           : [];
+
+        console.log('Transactions to display:', transactionsToShow);
+        console.log('Number of transactions:', transactionsToShow.length);
 
         // Add AI response
         setMessages((prev) => [
@@ -266,10 +270,10 @@ export default function AIChatAssistant() {
                           >
                             <div className="flex justify-between items-start mb-2">
                               <div className="flex-1">
-                                <p className="font-semibold text-white text-base">{tx.merchant}</p>
-                                <p className="text-text-secondary text-sm mt-0.5">{tx.category}</p>
+                                <p className="font-semibold text-white text-base">{tx.merchant || tx.merchant_name || 'Unknown Merchant'}</p>
+                                <p className="text-text-secondary text-sm mt-0.5">{tx.category || 'Uncategorized'}</p>
                               </div>
-                              <p className="font-bold text-cyan text-lg ml-3">₹{tx.amount}</p>
+                              <p className="font-bold text-cyan text-lg ml-3">${typeof tx.amount === 'number' ? tx.amount.toFixed(2) : parseFloat(tx.amount || 0).toFixed(2)}</p>
                             </div>
                             <p className="text-text-secondary text-xs">{new Date(tx.date).toLocaleDateString()}</p>
                           </motion.div>
