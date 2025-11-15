@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test API</title>
+</head>
+<body>
+    <h1>API Test</h1>
+    <div id="output"></div>
+    
+    <script>
+        async function testAPI() {
+            const token = localStorage.getItem('AUTH_TOKEN');
+            const output = document.getElementById('output');
+            
+            output.innerHTML = '<p>Token: ' + (token ? 'Found' : 'Not found') + '</p>';
+            
+            if (!token) {
+                output.innerHTML += '<p style="color: red;">Please login first at http://localhost:5173</p>';
+                return;
+            }
+            
+            try {
+                // Test stats endpoint
+                const statsResponse = await fetch('http://localhost:8000/api/v1/transactions/stats?days=30', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                output.innerHTML += '<h2>Stats Response:</h2>';
+                output.innerHTML += '<p>Status: ' + statsResponse.status + '</p>';
+                
+                if (statsResponse.ok) {
+                    const statsData = await statsResponse.json();
+                    output.innerHTML += '<pre>' + JSON.stringify(statsData, null, 2) + '</pre>';
+                } else {
+                    const errorText = await statsResponse.text();
+                    output.innerHTML += '<p style="color: red;">Error: ' + errorText + '</p>';
+                }
+                
+                // Test transactions endpoint
+                const transactionsResponse = await fetch('http://localhost:8000/api/v1/transactions/?limit=5', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                output.innerHTML += '<h2>Transactions Response:</h2>';
+                output.innerHTML += '<p>Status: ' + transactionsResponse.status + '</p>';
+                
+                if (transactionsResponse.ok) {
+                    const transactionsData = await transactionsResponse.json();
+                    output.innerHTML += '<p>Total: ' + transactionsData.total + '</p>';
+                    output.innerHTML += '<pre>' + JSON.stringify(transactionsData, null, 2) + '</pre>';
+                } else {
+                    const errorText = await transactionsResponse.text();
+                    output.innerHTML += '<p style="color: red;">Error: ' + errorText + '</p>';
+                }
+                
+            } catch (error) {
+                output.innerHTML += '<p style="color: red;">Exception: ' + error.message + '</p>';
+            }
+        }
+        
+        testAPI();
+    </script>
+</body>
+</html>
